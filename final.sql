@@ -160,6 +160,7 @@ create index idx_loan_dates on loan_records(borrow_date, return_date);
 /* Tạo một View tên là vw_overdue_loans hiển thị: Mã phiếu, Tên độc giả, Tên sách, Ngày mượn, 
 Ngày dự kiến trả. View này chỉ chứa các bản ghi mà ngày hiện tại (CURDATE) đã vượt quá ngày dự 
 kiến trả và sách chưa được trả */
+create or replace view vw_overdue_loans as
 select 
 	lr.loan_id, 
     r.full_name,
@@ -170,6 +171,8 @@ from loan_records lr
 join readers r on r.reader_id = lr.reader_id
 join books b on b.book_id = lr.book_id
 where lr.return_date is null and curdate() > due_date;
+
+select * from vw_overdue_loans;
 
 /* Viết Trigger trg_after_loan_insert. Khi một phiếu mượn mới được thêm vào bảng Loan_Records, 
 hãy tự động trừ số lượng tồn kho (stock_quantity) của cuốn sách tương ứng trong bảng Books đi 1 
